@@ -29,7 +29,7 @@ export class UserController {
     @ApiResponse({ status: 200, type: User })
     @Post('/add')
     create(@Body() userDto: CreateUserDto) {
-        return;
+        return this.userService.createUser(userDto);
     }
 
     @ApiOperation({ summary: 'Get user profile' })
