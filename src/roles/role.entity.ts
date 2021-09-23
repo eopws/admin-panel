@@ -11,8 +11,7 @@ export class Role {
     id: number;
 
     @ManyToOne(() => User, (user) => user.role)
-    @Column({ unique: false, nullable: true })
-    user: string;
+    user: User;
 
     @Column({ unique: false, default: 0, nullable: false })
     idGroup: string;
