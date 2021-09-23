@@ -2,8 +2,8 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 /*import * as redis from 'redis';
-import * as connectRedis from 'connect-redis';
-import * as session from 'express-session';*/
+import * as connectRedis from 'connect-redis';*/
+import * as session from 'express-session';
 import * as passport from 'passport';
 import { AppModule } from './app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
@@ -37,17 +37,17 @@ async function start() {
         const document = SwaggerModule.createDocument(app, config);
         SwaggerModule.setup('/api/docs', app, document);
 
-        /*const sessionMiddleware = session({
-            store: new RedisStore({ client: redisClient }),
+        const sessionMiddleware = session({
+            //store: new RedisStore({ client: redisClient }),
             secret: process.env.SESSION_SECRET_KEY,
-            resave: true,
-            rolling: true,
+            resave: false, //true,
+            //rolling: true,
             saveUninitialized: false,
             cookie: {
                 httpOnly: false,
             },
         });
-        app.use(sessionMiddleware);*/
+        app.use(sessionMiddleware);
 
         const passportInitializing = passport.initialize();
         app.use(passportInitializing);
