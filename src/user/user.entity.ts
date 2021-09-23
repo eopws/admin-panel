@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Role } from 'src/roles/role.entity';
-import { ManyToOne, Entity, PrimaryGeneratedColumn, Column, ManyToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 
 @Entity({ name: 'users' })
 export class User {
@@ -32,6 +32,6 @@ export class User {
     @Column({ default: false })
     banned: boolean;
 
-    @ManyToMany(() => Role, (role) => role.user)
+    @OneToMany(() => Role, (role) => role.user)
     role: Role;
 }
