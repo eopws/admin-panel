@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { User } from 'src/user/user.entity';
 import { Repository } from 'typeorm';
 import { Role } from './role.entity';
 
@@ -9,4 +10,16 @@ export class RolesService {
         @InjectRepository(Role)
         private rolesRepository: Repository<Role>,
     ) {}
+
+    async assignUserARole(role: string, user: User) {
+        const candidate = await this.rolesRepository.findOne({ where: { user, idGroup: role } });
+
+        if (candidate) {
+            return;
+        }
+
+        const newRow = this.rolesRepository.create({idGroup: role, user});
+
+        this.rolesRepository.save(newRow);
+    }
 }

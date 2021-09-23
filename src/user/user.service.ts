@@ -62,7 +62,7 @@ export class UserService {
         return this.usersRepository.findOne({ email: email });
     }
 
-    public async updateUser(id: string, { nickname }: UpdateUserDto) {
+    public async updateUser(id: string, { nickname, roles }: UpdateUserDto) {
         const user = await this.usersRepository.findOne(id);
         if (!user) {
             throw new NotFoundException('ewrwerwer');
@@ -78,6 +78,18 @@ export class UserService {
         user.nickname = nickname;
         delete user.password;
 
+        roles.forEach((role) => {
+            this.assignUserARole(user, role);
+        });
+
         return this.usersRepository.save(user);
+    }
+
+    async assignUserARole(user: string | User, role: string) {
+        if (typeof user === 'string') {
+            user = await this.usersRepository.findOne(user);
+        }
+
+        this.roleService.assignUserARole(role, user);
     }
 }

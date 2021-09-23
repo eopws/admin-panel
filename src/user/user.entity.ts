@@ -33,5 +33,5 @@ export class User {
     banned: boolean;
 
     @OneToMany(() => Role, (role) => role.user)
-    role: Role;
+    role: Role[];
 }
