@@ -11,6 +11,18 @@ export class RolesService {
         private rolesRepository: Repository<Role>,
     ) {}
 
+    async takeAwayAllRolesFromAUser(user: User) {
+        const rows = await this.rolesRepository.find({ where: { user } });
+
+        this.rolesRepository.remove(rows);
+    }
+
+    async takeAwayARoleFromAUser(role: string, user: User) {
+        const roleRow = await this.rolesRepository.find({ where: { user, idGroup: role } });
+
+        this.rolesRepository.remove(roleRow);
+    }
+
     async assignUserARole(role: string, user: User) {
         const candidate = await this.rolesRepository.findOne({ where: { user, idGroup: role } });
 

@@ -78,6 +78,8 @@ export class UserService {
         user.nickname = nickname;
         delete user.password;
 
+        this.roleService.takeAwayAllRolesFromAUser(user);
+
         roles.forEach((role) => {
             this.assignUserARole(user, role);
         });
