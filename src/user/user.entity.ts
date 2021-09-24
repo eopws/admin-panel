@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Ban } from 'src/bans/ban.entity';
 import { Role } from 'src/roles/role.entity';
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, OneToOne } from 'typeorm';
 
 @Entity({ name: 'users' })
 export class User {
@@ -28,9 +29,8 @@ export class User {
     @Column()
     password: string;
 
-    @ApiProperty({ example: 'true', description: 'If user is banned' })
-    @Column({ default: false })
-    banned: boolean;
+    @OneToOne(() => Ban, (ban) => ban.user)
+    ban: Ban;
 
     @OneToMany(() => Role, (role) => role.user)
     role: Role[];
