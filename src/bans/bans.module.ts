@@ -5,6 +5,7 @@ import { BansService } from './bans.service';
 
 @Module({
   providers: [BansService],
-  imports: [TypeOrmModule.forFeature([Ban])]
+  imports: [TypeOrmModule.forFeature([Ban])],
+  exports: [BansService]
 })
 export class BansModule {}

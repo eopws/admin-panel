@@ -11,12 +11,15 @@ import { User } from './user.entity';
 import { EmailIsTakenException } from './exceptions/email-is-taken.exception';
 import { NameIsTakenException } from './exceptions/name-is-taken.exception';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { BansService } from 'src/bans/bans.service';
+import { BanUserDto } from 'src/bans/dto';
 
 @Injectable()
 export class UserService {
     constructor(
         @InjectRepository(User)
         private usersRepository: Repository<User>,
+        private bansService: BansService,
         private roleService: RolesService,
     ) {}
 
@@ -51,18 +54,18 @@ export class UserService {
     }
 
     public getAllUsers() {
-        return this.usersRepository.find();
+        return this.usersRepository.find({ relations: ['role', 'ban'] });
     }
 
     public getUserById(id: number): Promise<User> {
-        return this.usersRepository.findOne(id, { relations: ['role'] });
+        return this.usersRepository.findOne(id, { relations: ['role', 'ban'] });
     }
 
     public findByEmail(email: string): Promise<User> {
         return this.usersRepository.findOne({ email: email });
     }
 
-    public async updateUser(id: string, { nickname, roles }: UpdateUserDto) {
+    public async updateUser(id: string, { nickname, roles, ban }: UpdateUserDto) {
         const user = await this.usersRepository.findOne(id);
         if (!user) {
             throw new NotFoundException('ewrwerwer');
@@ -78,11 +81,17 @@ export class UserService {
         user.nickname = nickname;
         delete user.password;
 
-        this.roleService.takeAwayAllRolesFromAUser(user);
+        if (roles) {
+            this.roleService.takeAwayAllRolesFromAUser(user);
 
-        roles.forEach((role) => {
-            this.assignUserARole(user, role);
-        });
+            roles.forEach((role) => {
+                this.assignUserARole(user, role);
+            });
+        }
+
+        if (ban) {
+            this.bansService.banUser(ban);
+        }
 
         return this.usersRepository.save(user);
     }
