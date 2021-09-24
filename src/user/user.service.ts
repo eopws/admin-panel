@@ -62,7 +62,7 @@ export class UserService {
     }
 
     public findByEmail(email: string): Promise<User> {
-        return this.usersRepository.findOne({ email: email });
+        return this.usersRepository.findOne({ email: email }, { relations: ['role', 'ban'] });
     }
 
     public async updateUser(id: string, { nickname, roles, ban }: UpdateUserDto) {
