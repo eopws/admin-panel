@@ -10,7 +10,7 @@ export class Role {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @ManyToOne(() => User, (user) => user.role)
+    @ManyToOne(() => User, (user) => user.role, { onDelete: 'CASCADE' })
     @JoinColumn()
     user: User;
 

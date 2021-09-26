@@ -32,6 +32,6 @@ export class User {
     @OneToOne(() => Ban, (ban) => ban.user)
     ban: Ban;
 
-    @OneToMany(() => Role, (role) => role.user)
+    @OneToMany(() => Role, (role) => role.user, { onDelete: 'CASCADE' })
     role: Role[];
 }
