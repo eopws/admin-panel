@@ -14,7 +14,7 @@ export class RolesService {
     async takeAwayAllRolesFromAUser(user: User) {
         const rows = await this.rolesRepository.find({ where: { user } });
 
-        this.rolesRepository.remove(rows);
+        await this.rolesRepository.remove(rows);
     }
 
     async takeAwayARoleFromAUser(role: string, user: User) {

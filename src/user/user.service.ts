@@ -82,10 +82,10 @@ export class UserService {
         delete user.password;
 
         if (roles) {
-            this.roleService.takeAwayAllRolesFromAUser(user);
+            await this.roleService.takeAwayAllRolesFromAUser(user);
 
-            roles.forEach((role) => {
-                this.assignUserARole(user, role);
+            roles.forEach(async (role) => {
+                await this.roleService.assignUserARole(role, user);
             });
         }
 
