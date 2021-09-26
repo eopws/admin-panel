@@ -29,7 +29,7 @@ export class User {
     @Column()
     password: string;
 
-    @OneToOne(() => Ban, (ban) => ban.user)
+    @OneToOne(() => Ban, (ban) => ban.user, { onDelete: 'CASCADE' })
     ban: Ban;
 
     @OneToMany(() => Role, (role) => role.user, { onDelete: 'CASCADE' })
