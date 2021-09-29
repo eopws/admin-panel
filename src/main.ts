@@ -22,7 +22,7 @@ const RedisStore = connectRedis(session);*/
 async function start() {
     try {
         const SERVER_PORT = process.env.SERVER_PORT || 5000;
-        const app = await NestFactory.create<NestExpressApplication>(AppModule);
+        const app = await NestFactory.create<NestExpressApplication>(AppModule, {cors: { credentials: true, origin: 'http://localhost:3000' }});
         const viewsPath = join(__dirname, '../views');
         app.engine('.hbs', exphbs({ extname: '.hbs', defaultLayout: 'main' }));
         app.set('views', viewsPath);

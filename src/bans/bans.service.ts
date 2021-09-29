@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { User } from 'src/user/user.entity';
 import { Repository } from 'typeorm';
 import { Ban } from './ban.entity';
 import { BanUserDto } from './dto';
@@ -21,5 +22,11 @@ export class BansService {
         const newRow = this.bansRepository.create(banDto);
 
         this.bansRepository.save(newRow);
+    }
+
+    async unbanUser(user: User) {
+        const ban = await this.bansRepository.findOne({ where: { user } });
+
+        this.bansRepository.remove(ban);
     }
 }

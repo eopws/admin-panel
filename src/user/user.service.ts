@@ -6,13 +6,11 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { RolesService } from 'src/roles/roles.service';
-import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './user.entity';
 import { EmailIsTakenException } from './exceptions/email-is-taken.exception';
 import { NameIsTakenException } from './exceptions/name-is-taken.exception';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { BansService } from 'src/bans/bans.service';
-import { BanUserDto } from 'src/bans/dto';
 
 @Injectable()
 export class UserService {
@@ -65,21 +63,21 @@ export class UserService {
         return this.usersRepository.findOne({ email: email }, { relations: ['role', 'ban'] });
     }
 
-    public async updateUser(id: string, { nickname, roles, ban }: UpdateUserDto) {
+    public async updateUser(id: string, { nickname, email, roles, ban }: UpdateUserDto) {
         const user = await this.usersRepository.findOne(id);
         if (!user) {
             throw new NotFoundException('ewrwerwer');
         }
 
-        const existedUser = await this.usersRepository.findOne({
-            nickname,
-        });
-        if (existedUser) {
-            throw new NameIsTakenException();
+        delete user.password;
+
+        if (nickname) {
+            user.nickname = nickname;
         }
 
-        user.nickname = nickname;
-        delete user.password;
+        if (email) {
+            user.email = email;
+        }
 
         if (roles) {
             await this.roleService.takeAwayAllRolesFromAUser(user);
@@ -90,7 +88,11 @@ export class UserService {
         }
 
         if (ban) {
-            this.bansService.banUser(ban);
+            if (ban !== 'unban') {
+                this.bansService.banUser(ban);
+            } else {
+                this.bansService.unbanUser(user);
+            }
         }
 
         return this.usersRepository.save(user);
